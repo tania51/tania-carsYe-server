@@ -11,7 +11,7 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.send('car server is working perfectly');
+  res.send('car server is working perfectly');
 })
 
 // user: carsYe
@@ -38,20 +38,45 @@ async function run() {
 
     // get all cars for display
     const carCollection = client.db("carsYe").collection("allCars");
+    const userCarCollection = client.db("carsYe").collection("user");
 
-    app.get('/brandProducts', async(req, res) => {
-        const cursor = carCollection.find();
-        const result = await cursor.toArray();
+    app.get('/brandProducts', async (req, res) => {
+      const cursor = carCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    // get cars for users using email
+    app.get('/myCart', async (req, res) => {
+      const cursor = userCarCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+    // post all data with users email
+    app.post('/brandProducts', async (req, res) => {
+      const carWithUser = req.body;
+      const result = await userCarCollection.insertOne(carWithUser);
+      console.log(result)
+      res.send(result);
+    })
+
+    app.get('/myCart/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await carCollection.findOne(query);
+        console.log(result);
         res.send(result);
     })
 
-    // app.get('/brandProducts/:id', async(req, res) => {
-    //     const id = req.params.id;
-    //     const query = { _id: new ObjectId(id) }
-    //     const result = await carCollection.findOne(query);
-    //     console.log(result);
-    //     res.send(result);
-    // })
+    // delte car
+    app.delete('/myCart/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await userCarCollection.deleteOne(query);
+      res.send(result);
+    })
 
     // post cars
     // app.post('/brandProducts', async(req, res) => {
@@ -80,5 +105,5 @@ run().catch(console.dir);
 
 
 app.listen(port, () => {
-    console.log(`server is working on port ${port}`);
+  console.log(`server is working on port ${port}`);
 })
