@@ -39,6 +39,22 @@ async function run() {
     // get all cars for display
     const carCollection = client.db("carsYe").collection("allCars");
     const userCarCollection = client.db("carsYe").collection("user");
+    const brandCarCollection = client.db("carsYe").collection("brandName");
+    const sliderCarCollection = client.db("carsYe").collection("sliderImage");
+
+    app.get('/brandName', async (req, res) => {
+      const cursor = brandCarCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    // get cars for slider
+    app.get('/sliderImage', async (req, res) => {
+      const cursor = sliderCarCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
 
     app.get('/brandProducts', async (req, res) => {
       const cursor = carCollection.find();
