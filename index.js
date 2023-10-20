@@ -41,6 +41,7 @@ async function run() {
     const userCarCollection = client.db("carsYe").collection("user");
     const brandCarCollection = client.db("carsYe").collection("brandName");
     const sliderCarCollection = client.db("carsYe").collection("sliderImage");
+    const addCarCollection = client.db("carsYe").collection("addCar");
 
     app.get('/brandName', async (req, res) => {
       const cursor = brandCarCollection.find();
@@ -71,7 +72,7 @@ async function run() {
 
 
     // post all data with users email
-    app.post('/brandProducts', async (req, res) => {
+    app.post('/myCart', async (req, res) => {
       const carWithUser = req.body;
       const result = await userCarCollection.insertOne(carWithUser);
       console.log(result)
@@ -79,12 +80,12 @@ async function run() {
     })
 
     app.get('/myCart/:id', async(req, res) => {
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) }
-        const result = await carCollection.findOne(query);
-        console.log(result);
-        res.send(result);
-    })
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await userCarCollection.findOne(query);
+      console.log(result);
+      res.send(result);
+  })
 
     // delte car
     app.delete('/myCart/:id', async(req, res) => {
@@ -93,6 +94,26 @@ async function run() {
       const result = await userCarCollection.deleteOne(query);
       res.send(result);
     })
+
+    // post for add car form
+    app.post('/addCar', async (req, res) => {
+      const addCar = req.body;
+      const result = await addCarCollection.insertOne(addCar);
+      console.log(result)
+      res.send(result);
+    })
+
+    // get car from add from's db
+    app.get('/addCar', async (req, res) => {
+      const cursor = addCarCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+    
+
+    
 
     // post cars
     // app.post('/brandProducts', async(req, res) => {
