@@ -14,13 +14,10 @@ app.get('/', (req, res) => {
   res.send('car server is working perfectly');
 })
 
-// user: carsYe
-// pass: t4Xy6Ejj208L6tFB
 
 
-
-// const uri = "mongodb+srv://<username>:<password>@cluster0.jwathvu.mongodb.net/?retryWrites=true&w=majority";
-const uri = "mongodb+srv://carsYe:t4Xy6Ejj208L6tFB@cluster0.jwathvu.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jwathvu.mongodb.net/?retryWrites=true&w=majority`;
+console.log(uri);
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
